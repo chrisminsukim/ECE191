@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
+//import {dataArray} from '../../backend/server';
 import "react-datepicker/dist/react-datepicker.css";
 
 export default class CreateExercise extends Component {
@@ -17,7 +18,8 @@ export default class CreateExercise extends Component {
             description: '',
             duration: 0,
             date: new Date(),
-            users: []
+            users: [],
+            data: []
         }
     }
 

@@ -22,6 +22,11 @@ parser.on('data', data=>{
   dataArray.push(line);
   if (dataArray.length == 5){
     console.log(dataArray);
+    //export  dataArray;
+    dataArrayObject = {dataArray};
+    app.get("/", (req, res) => {
+      res.send({dataArrayObject});
+    });
     dataArray = [];
   }
 })
@@ -74,3 +79,6 @@ app.use('/users', usersRouter);
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
+
+
+

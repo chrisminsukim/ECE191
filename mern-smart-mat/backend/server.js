@@ -2,14 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+
 //Arduino Serial Monitor Connection
 const SerialPort = require('serialport');
 const Readline = require('@serialport/parser-readline');
-const ArduinoPort = new SerialPort('COM3', { baudRate: 9600 });
+const ArduinoPort = new SerialPort('COM4', { baudRate: 9600 });
 const parser = ArduinoPort.pipe(new Readline({ delimiter: '\r\n' }));
 
 // Read the port data
-var dataStream = true;
+
+
 var i;
 ArduinoPort.on("open", () => {
   console.log('serial port open');
@@ -33,25 +35,6 @@ parser.on('data', data=>{
 
 
 
-
-
-
-
-/*var j = 0;
-while (j < 10) { //I just made a while loop so we get 10 arrays to test
-  const DataArray = []; //initialize an empty array
-  var length = 5;  //variable for the for loop, we want it length of 5 bc we have 5 elements
-  for(var i = 0; i < length; i++){
-    parser.on('data', data =>{  //grabs one line of data
-      DataArray.push(data);  //pushes it onto our empty array 
-    });
-  }
-  console.log('got word from arduino:', DataArray);  //console log our array
-  j++;
-}*/
-
-
-
 require('dotenv').config();
 
 const app = express();
@@ -71,10 +54,12 @@ connection.once('open', () => {
 
 const exercisesRouter = require('./routes/exercises');
 const usersRouter = require('./routes/users');
-const { json } = require('express');
+const descriptionsRouter = require('./routes/descriptions');
+//const { json } = require('express');
 
 app.use('/exercises', exercisesRouter);
 app.use('/users', usersRouter);
+app.use('/descriptions', descriptionsRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import DatePicker from 'react-datepicker';
 //import {dataArray} from '../../backend/server';
+import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 
 export default class CreateExercise extends Component {
     constructor(props) {
         super(props);
-
+        
         this.onChangeUsername = this.onChangeUsername.bind(this);
         this.onChangeDescription = this.onChangeDescription.bind(this);
         this.onChangeDuration = this.onChangeDuration.bind(this);
@@ -19,16 +20,49 @@ export default class CreateExercise extends Component {
             duration: 0,
             date: new Date(),
             users: [],
-            data: []
+            data: [],
+            descriptions:[]
         }
     }
 
-    componentDidMount() {
-        this.setState({
-            users: ['test user'],
-            username: 'test user'
-        })
+    getData(){
+      setInterval(()=> {
+        axios.get('http://localhost:5000/')
+        // .then(response=>{
+        //   console.log(response)
+        // })
+        .then(response=>{
+          this.setState({data: response.data.dataArrayObject.dataArray})
+      })
+      },1000)
     }
+
+    componentDidMount() {
+      
+
+
+
+      axios.get('http://localhost:5000/users/')
+        .then(response => {
+          if (response.data.length > 0) {
+            this.setState({
+              users: response.data.map(user => user.username),
+              username: response.data[0].username
+            })
+          }
+        })
+      axios.get('http://localhost:5000/descriptions/')
+      .then(response => {
+        if (response.data.length > 0) {
+          this.setState({
+            descriptions: response.data.map(descriptions => descriptions.description),
+            description: response.data[0].description
+          })
+        }
+      })
+    }
+
+  
 
     onChangeUsername(e) {
         this.setState({
@@ -65,6 +99,9 @@ export default class CreateExercise extends Component {
         }
 
         console.log(exercise);
+        
+        axios.post('http://localhost:5000/exercises/add', exercise)
+            .then(res => console.log(res.data));
 
         window.location = '/';
     }
@@ -72,6 +109,24 @@ export default class CreateExercise extends Component {
     render() {
         return (
     <div>
+      {this.getData()}
+      <div>
+        {this.state.data[0]}
+      </div>
+      <div>
+        {this.state.data[1]}
+      </div>
+      <div>
+        {this.state.data[2]}
+      </div>
+      <div>
+        {this.state.data[3]}
+      </div>
+      <div>
+        {this.state.data[4]}
+      </div>
+      
+      
       <h3>Record Session</h3>
       <form onSubmit={this.onSubmit}>
         <div className="form-group"> 
@@ -93,12 +148,20 @@ export default class CreateExercise extends Component {
         </div>
         <div className="form-group"> 
           <label>Description: </label>
-          <input  type="text"
+          <select ref="userInput"
               required
               className="form-control"
-              value={this.state.description}
-              onChange={this.onChangeDescription}
-              />
+              value={this.state.descriptions}
+              onChange={this.onChangeDescription}>
+              {
+                this.state.descriptions.map(function(descriptions) {
+                  return <option 
+                    key={descriptions}
+                    value={descriptions}>{descriptions}
+                    </option>;
+                })
+              }
+          </select>
         </div>
         <div className="form-group">
           <label>Duration (in seconds): </label>

@@ -18,7 +18,9 @@ export default class EditExercise extends Component {
       description: '',
       duration: 0,
       date: new Date(),
-      users: []
+      users: [],
+      data: [],
+      descriptions:[]
     }
   }
 
@@ -36,43 +38,52 @@ export default class EditExercise extends Component {
       .catch(function (error) {
         console.log(error);
       })
-
+   
     axios.get('http://localhost:5000/users/')
       .then(response => {
         if (response.data.length > 0) {
           this.setState({
             users: response.data.map(user => user.username),
+            username: response.data[0].username
           })
         }
       })
-      .catch((error) => {
-        console.log(error);
-      })
-
+      // .catch((error) => {
+      //   console.log(error);
+      // })
+ axios.get('http://localhost:5000/descriptions/')
+    .then(response => {
+      if(response.data.length > 0){
+        this.setState({
+          descriptions: response.data.map(descriptions => descriptions.description),
+          description: response.data[0].descriptions
+        })
+      }
+    })
   }
 
   onChangeUsername(e) {
     this.setState({
       username: e.target.value
-    })
+    });
   }
 
   onChangeDescription(e) {
     this.setState({
       description: e.target.value
-    })
+    });
   }
 
   onChangeDuration(e) {
     this.setState({
       duration: e.target.value
-    })
+    });
   }
 
   onChangeDate(date) {
     this.setState({
       date: date
-    })
+    });
   }
 
   onSubmit(e) {
@@ -117,12 +128,20 @@ export default class EditExercise extends Component {
         </div>
         <div className="form-group"> 
           <label>Description: </label>
-          <input  type="text"
+          <select ref="userInput"
               required
               className="form-control"
-              value={this.state.description}
-              onChange={this.onChangeDescription}
-              />
+              value={this.state.descriptions}
+              onChange={this.onChangeDescription}>
+              {
+                this.state.descriptions.map(function(descriptions) {
+                  return <option
+                    key={descriptions}
+                    value={descriptions}>{descriptions}
+                    </option>;
+                })
+              } 
+            </select>  
         </div>
         <div className="form-group">
           <label>Duration (in seconds): </label>

@@ -4,6 +4,8 @@ import DatePicker from 'react-datepicker';
 import axios from 'axios';
 import "react-datepicker/dist/react-datepicker.css";
 
+
+
 export default class CreateExercise extends Component {
     constructor(props) {
         super(props);
@@ -23,19 +25,20 @@ export default class CreateExercise extends Component {
             data: [],
             descriptions:[]
         }
+        
     }
-
-    getData(){
-      setInterval(()=> {
-        axios.get('http://localhost:5000/')
-        // .then(response=>{
-        //   console.log(response)
-        // })
-        .then(response=>{
-          this.setState({data: response.data.dataArrayObject.dataArray})
-      })
-      },1000)
-    }
+    
+    // getData(){
+    //   setInterval(()=> {
+    //     axios.get('http://localhost:5000/')
+    //     // .then(response=>{
+    //     //   console.log(response)
+    //     // })
+    //     .then(response=>{
+    //       this.setState({data: response.data.dataArrayObject.dataArray})
+    //   })
+    //   },1000)
+    // }
 
     componentDidMount() {
       
@@ -61,8 +64,10 @@ export default class CreateExercise extends Component {
         }
       })
     }
-
+    
   
+    
+      
 
     onChangeUsername(e) {
         this.setState({
@@ -98,35 +103,59 @@ export default class CreateExercise extends Component {
             date: this.state.date
         }
 
+        const chartData = {
+          duration: this.state.duration,
+          dataArray: this.state.dataArray
+        }
         console.log(exercise);
         
         axios.post('http://localhost:5000/exercises/add', exercise)
             .then(res => console.log(res.data));
+        
+        // axios.get('http://localhost:5000/', dataArray)
+        // .then(response=>{
+        //   this.setState({chartData: response.chartSchema.dataArray})
+        // axios.get('http://localhost:5000/', chartData)
+        //   .then(res=>console.log(res.data));
 
-        window.location = '/';
+        // axios.post('http://localhost:5000/', chartData)
+        //   .then(res => {axios.post('http://localhost:5000/chart/add', {dataArray: res})}()
+        //   .then(res => console.log(res.data)))
+        axios.post("http://localhost:5000/", chartData).then((res) => {
+          console.log("dataArray: ", res.data)
+          this.props.setData(res.data);
+        axios.post("http://localhost:5000/chart/add", { dataArray: res.data })
+        .then((res) => console.log("Chart added!"));
+});
+        
+
+        
+        //window.location = '/chart';
     }
 
     render() {
+      
         return (
-    <div>
-      {this.getData()}
-      <div>
-        {this.state.data[0]}
-      </div>
-      <div>
-        {this.state.data[1]}
-      </div>
-      <div>
-        {this.state.data[2]}
-      </div>
-      <div>
-        {this.state.data[3]}
-      </div>
-      <div>
-        {this.state.data[4]}
-      </div>
+
+     <div>
+    {/* //   {this.getData()}
+    //   <div>
+    //     {this.state.data[0]}
+    //   </div>
+    //   <div>
+    //     {this.state.data[1]}
+    //   </div>
+    //   <div>
+    //     {this.state.data[2]}
+    //   </div>
+    //   <div>
+    //     {this.state.data[3]}
+    //   </div>
+    //   <div>
+    //     {this.state.data[4]}
+    //   </div> */}
       
-      
+    
       <h3>Record Session</h3>
       <form onSubmit={this.onSubmit}>
         <div className="form-group"> 
@@ -187,6 +216,9 @@ export default class CreateExercise extends Component {
         </div>
       </form>
     </div>
+
     )
   }
 }
+
+

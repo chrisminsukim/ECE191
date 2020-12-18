@@ -21,6 +21,9 @@ export default class Navbar extends Component {
           <li className="navbar-item">
           <Link to="/createnewexercise" className="nav-link">Create New Exercise</Link>
           </li>
+          <li className="navbar-item">
+          <Link to="/chart" className="nav-link">Chart</Link>
+          </li>
         </ul>
         </div>
       </nav>
